@@ -135,32 +135,38 @@ jQuery(function($) {
             curTime = previous();
         });
 
-        // window.addEventListener("wheel", function(e) {
-        //     if($("#popup").is(':visible')) {
-        //         if (e.deltaY < 0) {
-        //             curTime = previous();
-        //         }
-        //         else if (e.deltaY > 0) {
-        //             curTime = next();
-        //         }
-        //     }
-        // });
-        //
-        // $(document).keyup(function(e){
-        //     if($("#popup").is(':visible')) {
-        //         if (e.which == 37) {
-        //             curTime = previous();
-        //         }
-        //     }
-        // });
-        //
-        // $(document).keyup(function(e){
-        //     if($("#popup").is(':visible')) {
-        //         if (e.which == 39) {
-        //             curTime = next();
-        //         }
-        //     }
-        // });
+        var wheelFunc = function(e) {
+            if($("#popup").is(':visible')) {
+                if (e.deltaY < 0) {
+                    curTime = previous();
+                }
+                else if (e.deltaY > 0) {
+                    curTime = next();
+                }
+            }
+        }
+
+        window.addEventListener("wheel", wheelFunc);
+
+        var keyPrevFunc = function(e) {
+            if($("#popup").is(':visible')) {
+                if (e.which == 37) {
+                    curTime = previous();
+                }
+            }
+        }
+
+        document.addEventListener('keyup', keyPrevFunc)
+
+        var keyNextFunc = function(e) {
+            if($("#popup").is(':visible')) {
+                if (e.which == 39) {
+                    curTime = next();
+                }
+            }
+        }
+
+        document.addEventListener('keyup', keyNextFunc)
 
         $(document).keydown(function(e) {
 
@@ -169,6 +175,9 @@ jQuery(function($) {
                 $("#popup").remove();
                 fullScreen = false;
                 $("html").css("overflow","auto");
+                window.removeEventListener("wheel", wheelFunc);
+                document.removeEventListener("keyup", keyPrevFunc);
+                document.removeEventListener("keyup", keyNextFunc);
             }
         });
 
@@ -178,6 +187,9 @@ jQuery(function($) {
             $("#popup").remove();
             fullScreen = false;
             $("html").css("overflow","auto");
+            window.removeEventListener("wheel", wheelFunc);
+            document.removeEventListener("keyup", keyPrevFunc);
+            document.removeEventListener("keyup", keyNextFunc);
         });
     });
 });
@@ -297,10 +309,8 @@ function getLink() {
         window.links = JSON.parse(result);
         border(0);
         $("#map").attr("src", window.links[0]);
-        $("#map").ready(function() {
-            $("#plug").hide();
-        });
         $("#map").show();
+        $("#plug").hide();
     });
 }
 
